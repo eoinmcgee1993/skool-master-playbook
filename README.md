@@ -8,7 +8,7 @@ This repository owns source intake, course structure, raw artefacts, provenance 
 It does not bypass authentication, defeat access controls, or scrape protected Skool content without an authorised export/API/input.
 
 ## Pipeline
-authorised source -> ingest -> normalise -> provenance -> handoff -> playbook engine -> publish
+authorised source -> ingest -> normalise -> provenance -> handoff -> playbook  engine -> publish
 
 ## Related repository
 - skool-playbook-engine: https://github.com/eoinmcgee1993/skool-playbook-engine
