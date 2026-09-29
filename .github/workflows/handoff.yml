@@ -1,0 +1,25 @@
+name: Handoff to playbook engine
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "data/normalised/bundle.json"
+
+permissions:
+  contents: read
+
+jobs:
+  handoff:
+    if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push authorised bundle to engine
+        env:
+          GH_TOKEN: ${{ secrets.PLAYBOOK_ENGINE_TOKEN }}
+        run: |
+          test -n "$GH_TOKEN"
+          B64=$(base64 -w 0 data/normalised/bundle.json)
+          curl --fail-with-body -X PUT             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             https://api.github.com/repos/eoinmcgee1993/skool-playbook-engine/contents/input/bundle.json             -d "{"message":"automation: update authorised source bundle","content":"$B64","branch":"main"}" || true
+          curl --fail-with-body -X POST             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             https://api.github.com/repos/eoinmcgee1993/skool-playbook-engine/dispatches             -d '{"event_type":"source-bundle-updated"}'
